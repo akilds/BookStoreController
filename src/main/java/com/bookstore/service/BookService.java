@@ -94,15 +94,20 @@ public class BookService implements IBookService{
 
 	//Updates the quantity of the book
 	@Override
-	public Response updateBookQuantity(String userToken, int bookId,  long quantity) {
+	public Response updateBookQuantity(String userToken, int bookId,  long quantity, boolean isBookAdded) {
 		int userId = tokenUtil.decodeToken(userToken);
 		String uri = "http://bookstore-user/user/verifyuserid/" + userId;
 		boolean isUserIdPresent = restTemplate.getForObject(uri, Boolean.class);
 		Optional<BookData> isPresent = bookRepository.findById(bookId);
 		if(isPresent.isPresent() && isUserIdPresent) {
 			log.info("Update Book Quantity");
-			isPresent.get().setBookQuantity(isPresent.get().getBookQuantity() + quantity);
-			bookRepository.save(isPresent.get());
+			if(isBookAdded) {
+				isPresent.get().setBookQuantity(isPresent.get().getBookQuantity() + quantity);
+				bookRepository.save(isPresent.get());
+			}else {
+				isPresent.get().setBookQuantity(isPresent.get().getBookQuantity() - quantity);
+				bookRepository.save(isPresent.get());
+			}
 			return new Response(200, "Book Quantity Updated Successfully", userToken);
 		}else {
 			log.error("Book/User Doesnt Exist");

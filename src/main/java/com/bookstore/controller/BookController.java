@@ -33,6 +33,7 @@ public class BookController {
 	@Autowired
 	private IBookService bookService;
 	
+	//Returns all the books present
 	@GetMapping("getallbooks")
 	public ResponseEntity<List<?>> getAllBooks(@RequestHeader String userToken) {
 		log.info("Get All Book Data");
@@ -40,6 +41,7 @@ public class BookController {
 		return new ResponseEntity<List<?>>(response, HttpStatus.OK);
 	}
 	
+	//Creates a new book data
 	@PostMapping("/create")
 	public ResponseEntity<Response> addBookData(@RequestHeader String userToken,
 												@RequestBody BookDTO bookDTO) {
@@ -48,12 +50,14 @@ public class BookController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//Verifies the existence of a book
 	@GetMapping("/verifybookid/{bookId}")
 	public boolean verifyBookId(@PathVariable int bookId){
 		boolean userCheck = bookService.verifyBookId(bookId);
 		return userCheck;
 	}
 		
+	//Updates an existing book
 	@PutMapping("/update/{bookId}")
 	public ResponseEntity<Response> updateBookData(@RequestHeader String userToken,
 												   @PathVariable int bookId,
@@ -63,15 +67,18 @@ public class BookController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//Updates the quantity of the book
 	@PutMapping("/updatequantity/{bookId}")
-	public ResponseEntity<Response> updateBookQuantity(@RequestHeader String userToken,
-			 										   @PathVariable int bookId,
-			                                       	   @RequestParam long quantity) {
+	public ResponseEntity<Response> updateBookQuantity(@PathVariable int bookId,
+			                                       	   @RequestParam long quantity,
+			                                       	   @RequestParam boolean isBookAdded,
+			                                       	   @RequestParam String userToken) {
 		log.info("Update Book Quantity");
-		Response response  = bookService.updateBookQuantity(userToken, bookId, quantity);
+		Response response  = bookService.updateBookQuantity(userToken, bookId, quantity, isBookAdded);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//Updates the price of the book
 	@PutMapping("/updateprice/{bookId}")
 	public ResponseEntity<Response> updateBookPrice(@RequestHeader String userToken,
 			    									@PathVariable int bookId,
@@ -81,6 +88,7 @@ public class BookController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
+	//Deletes an existing book
 	@DeleteMapping("/delete")
 	public ResponseEntity<Response> deleteBookData(@RequestHeader String userToken,
 			 									   @PathVariable int bookId) {

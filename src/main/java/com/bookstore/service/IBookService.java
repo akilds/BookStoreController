@@ -16,7 +16,7 @@ public interface IBookService {
 
 	Response deleteBook(String userToken, int bookId);
 
-	Response updateBookQuantity(String userToken, int bookId, long quantity);
+	Response updateBookQuantity(String userToken, int bookId, long quantity, boolean isBookAdded);
 
 	Response updateBookPrice(String userToken, int bookId, double price);
 
